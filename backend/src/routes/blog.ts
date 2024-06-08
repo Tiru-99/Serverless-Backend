@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { jwt } from 'hono/jwt';
 import { verify as verifyToken } from 'hono/jwt';
+import { createPostType ,updatePostType } from 'tiru_99-common';
 
 
 
@@ -61,7 +62,14 @@ blogRouter.post('/', async (c) => {
 
   //to get the body 
   const body = await c.req.json();
-
+  //zod validation
+  const {success} = createPostType.safeParse(body);
+  if(!success){
+    c.status(400);
+    return c.json({
+      "error" : "Invalid Input"
+    });
+  }
  
   try {
     //prisma to create a new post
@@ -95,7 +103,14 @@ blogRouter.put('/' , async(c)=>{
     
     // to get the body
     const body = await c.req.json();
-
+    //zod validation
+    const {success} = updatePostType.safeParse(body);
+    if(!success){
+      c.status(400);
+      return c.json({
+        "msg" : "Invalid Input"
+      });
+    }
     try{
        //to update data
        await prisma.post.update({
