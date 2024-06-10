@@ -3,7 +3,8 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign , verify} from 'hono/jwt'
 //importing deployed librar
-import { signinInput , signupInput } from 'tiru_99-common'
+import { signinInput , signupInput ,SignupType} from 'tiru_99-common'
+import { parse } from 'hono/utils/cookie'
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -51,12 +52,12 @@ userRouter.post('/signup' , async(c)=>{
   const body = await c.req.json(); 
 
   //zod validation
-  const success = signupInput.safeParse(body);
-  if(!success){
-    c.status(400);
-    return c.json({
-      "error" : "invalid input"
-    });
+  const parseResult = signupInput.safeParse(body);
+  if (!parseResult.success) {
+      c.status(400);
+      return c.json({
+          "error": "Please enter inputs in correct formats",
+      });
   }
 
   try{
@@ -68,6 +69,7 @@ userRouter.post('/signup' , async(c)=>{
     })
 
     if(existingUser){
+      c.status(409);
       return c.json({
         "msg":"User already exists"
       })
@@ -101,11 +103,11 @@ userRouter.post('/signin',async(c)=>{
   const body = await c.req.json(); 
 
   //zod validation
-  const {success} = signinInput.safeParse(body);
-  if(!success){
+  const parseResult = signinInput.safeParse(body);
+  if(!parseResult.success){
     c.status(400);
     return c.json({
-      "error":"Invalid Input"
+      "error":"Please enter correct inputs in proper format"
     });
   }
 
