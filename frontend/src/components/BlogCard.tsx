@@ -22,7 +22,7 @@ export const BlogCard = ({
           
                 <div className="flex items-center">
                     <Avatar name = {authorName} ></Avatar>
-                    <div className="pl-2 text-l font-thin">{authorName}</div>
+                    <div className="pl-2 text-l font-thin max-w-sm">{authorName}</div>
                     <div className="rounded-full bg-slate-400 h-1 w-1 ml-2 flex items-center"></div>
                     <div className = "pl-1 font-thin text-l ">{publishedDate}</div>
                 </div>
