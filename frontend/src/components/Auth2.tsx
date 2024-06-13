@@ -22,6 +22,7 @@ export const Auth2 = () =>{
     async function sendRequest(){
 
         if(postInput.password === null || postInput.email === null  ){
+            //to check if the fields are null
             setError("Please fill all the fields");
             return ;
             
@@ -29,6 +30,7 @@ export const Auth2 = () =>{
     
         const validation = signinInput.safeParse(postInput);
         if (!validation.success && postInput.email !== null && postInput.password !== null) {
+            //predefined zod schema validation
             setError("Please fill the inputs in proper format");
             return;
         }

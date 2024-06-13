@@ -35,6 +35,7 @@ export const Auth = () => {
         }
 
         if (postInput.password.length < 6) {
+            //if password length is less than 6
             setError("Password should be at least 6 characters long");
             return;
         }

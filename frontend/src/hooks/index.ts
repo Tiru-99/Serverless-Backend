@@ -27,7 +27,7 @@ const initialBlog: Blog = {
   };
 
 
-
+  //hook to retrieve posted blog via sending userId as params
   export const usePosted = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
     const [postedBlog, setPostedBlog] = useState<Blog[]>([]);
@@ -50,11 +50,13 @@ const initialBlog: Blog = {
             };
 
             try {
+                //send a get request 
                 const response = await axios.get(`${BACKEND_URL}/api/v1/blog/bulk/${id}`, config);
                 if ((response.data)) {
                     setPostedBlog(response.data.posts);
-                    console.log(response.data)
+                    
                 } else {
+                    //error handling if data is not fetched
                     console.error('Unexpected response format:', response.data);
                 }
                 setLoading(false);
@@ -73,6 +75,7 @@ const initialBlog: Blog = {
     };
 };
 
+//hook to get blog details via sending id as params 
 export const useBlog = ({id} : {id : string}) =>{
     const[loading , setLoading] = useState(true);
     const[blog , setBlog] = useState<Blog>( initialBlog );
@@ -80,6 +83,8 @@ export const useBlog = ({id} : {id : string}) =>{
 
     useEffect(() =>{
         const token = localStorage.getItem('token');
+        //if token is not present means user not authorized 
+        //directing him to signin page
         if(!token || token == null){
             alert("you need to be logged in first");
             navigate('/signin')
@@ -94,6 +99,7 @@ export const useBlog = ({id} : {id : string}) =>{
             },
         };
 
+        //sending reuquests
         axios.get(`${BACKEND_URL}/api/v1/blog/${id}` , config)
         .then(response => {
             setBlog(response.data);
@@ -122,7 +128,7 @@ export const useBlogs = () => {
   useEffect(() => {
     // Retrieve the JWT token from local storage or session storage
     const token = localStorage.getItem('token'); // Or use sessionStorage.getItem('jwtToken');
-    console.log("this is the token" , token);
+  
 
     if(!token || token == null){
         alert("you need to be logged in first");
@@ -148,7 +154,7 @@ export const useBlogs = () => {
       });
   }, []);
 
-  console.log(blogs);
+ 
 
   return {
     loading,

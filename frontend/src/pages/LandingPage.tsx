@@ -19,7 +19,7 @@ const LandingPage = () => {
                             animate={{ opacity: 1 }}
                             transition={{ duration: 1.5, delay: 0 }}
                         >
-                            Medium
+                            SleekPost
                         </motion.div>
                     </motion.h1>
                     <p className="text-lg mt-2 text-white">Discover insights, stories, and more.</p>

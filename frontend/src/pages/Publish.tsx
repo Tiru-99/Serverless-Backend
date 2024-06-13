@@ -17,6 +17,10 @@ export const Publish = () => {
     const navigate = useNavigate();
 
     async function publishPost() {
+        if (!blogInput.title || !blogInput.content) {
+            setError("All fields are required.");
+            return;
+        }
         const validation = createPostType.safeParse(blogInput);
         if (!validation.success) {
             setError("Please fill the inputs in proper format");

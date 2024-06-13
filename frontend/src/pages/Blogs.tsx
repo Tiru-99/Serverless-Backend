@@ -14,11 +14,13 @@ export const Blogs = () => {
     );
   }
 
+  //function to map all the blogs
   return (
     <>
       <Navbar />
       <div className="mx-auto max-w-2xl">
         {blogs.slice().reverse().map((blog) => (
+          // to redirect user to the blog page where they can read the blog
           <Link to={`/blog/${blog.id}`} key={blog.id}>
             <BlogCard
               authorName={blog.author.name || "Anonymous"}

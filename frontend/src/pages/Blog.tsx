@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useBlog } from "../hooks";
 import { FullBlog } from "../components/FullBlog";
 
-
+//main blog page
 const Blog = () =>{
     const { id } = useParams<{ id: string }>();
   const{loading , blog } = useBlog({

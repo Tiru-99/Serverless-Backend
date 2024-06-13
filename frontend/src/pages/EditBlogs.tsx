@@ -17,6 +17,8 @@ export const EditBlogs = () => {
 
     useEffect(() => {
         if (blog) {
+            //setting default value as post title and content in the input boxes
+            //provides more function
             setPostInput({ id: blog.id, title: blog.title, content: blog.content });
         }
     }, [blog]);
@@ -65,6 +67,7 @@ export const EditBlogs = () => {
                         <input
                             type="text"
                             id="title"
+
                             value={postInput.title}
                             className="block w-full p-2 mt-1 text-sm text-gray-900 bg-slate-100 rounded-md border border-gray-200 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Enter the title of your blog"

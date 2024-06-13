@@ -6,7 +6,7 @@ interface blogVariables {
 }
 
 
-
+//BlogCard component and Avatar 
 export const BlogCard = ({
     authorName , 
     publishedDate, 
@@ -35,6 +35,7 @@ export const BlogCard = ({
                     {content.slice(0 ,100) + "..."}
                 </div>
 
+                {/* logic for ... after longs posts in blogs page */}
                 <div className="mt-4">
                     {`${Math.ceil(content.length / 100 )} minutes read`}
                 </div>

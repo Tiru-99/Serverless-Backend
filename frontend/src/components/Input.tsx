@@ -5,6 +5,7 @@ interface LabelType {
     type : string , 
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+//Input component for smooth handlings of Input
 export const Input = ({label , placeholder , type , onChange} : LabelType) =>{
     return (
         <>

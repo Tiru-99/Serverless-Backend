@@ -4,7 +4,7 @@ import { Avatar } from "./BlogCard";
 import { Navbar } from "./Navbar";
 
 
-
+//page for viewing a complete blog
 export const FullBlog = ({ blog }: { blog: Blog }) => {
 
     return (
