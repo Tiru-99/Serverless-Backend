@@ -24,6 +24,7 @@ export const blogRouter = new Hono<{
     //variable to get the header request
     const header = c.req.header('Authorization');
 
+
     if (!header) {
         c.status(403);
         return c.json({ msg: 'Unauthorized' });
@@ -52,10 +53,12 @@ export const blogRouter = new Hono<{
   await next();
 });
 
+
+
 // Route to create a new blog post
 blogRouter.post('/', async (c) => {
   const userId = (c as any).userId;
-
+ 
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -70,14 +73,20 @@ blogRouter.post('/', async (c) => {
       "error" : "Invalid Input"
     });
   }
+  
  
   try {
+    const currentDate = new Date().toISOString().split('T')[0];
+    console.log(currentDate); // e.g., "2024-06-13"
+    
+
     //prisma to create a new post
     const post = await prisma.post.create({
       data: {
         title: body.title,
         content: body.content,
         authorId: userId,
+        publishedDate:currentDate,
       },
     });
     
@@ -93,6 +102,36 @@ blogRouter.post('/', async (c) => {
   }
 });
 
+//route to get the userId of the user 
+blogRouter.get('/get/userId', async (c) => {
+  // Get the Authorization header
+  const header = c.req.header('Authorization');
+
+  if (!header) {
+    c.status(403);
+    return c.json({ msg: 'Unauthorized' });
+  }
+
+  // Bearer Token => ['Bearer', 'Token']
+  const token = header.split(' ')[1]; 
+
+  try {
+    // Verify and decode the token using your JWT secret
+    const decoded  = await verifyToken(token, c.env.JWT_SECRET);
+
+    // Extract the userId from the decoded token
+    // Make sure the token contains userId
+    
+    console.log(decoded);
+    const userId = decoded.id;
+    // Return the userId in the response
+    c.status(200);
+    return c.json({userId});
+  } catch (error) {
+    c.status(400);
+    return c.json({ msg: 'Invalid token.' });
+  }
+});
 //route to update the post 
 blogRouter.put('/' , async(c)=>{
     const userId = (c as any).userId;
@@ -130,7 +169,7 @@ blogRouter.put('/' , async(c)=>{
         });
 
     } catch(e){
-        console.log("Something went wrong while updating the post :::" , e);
+        console.log("Something went wrong while updating the post tiru slskdfjlsjdf baby :::" , e);
     }
 });
 
@@ -149,14 +188,60 @@ blogRouter.get('/:id', async (c) => {
     //trying to get post of the current id
     const post = await prisma.post.findUnique({
       where: {
-        id,
+        id
       },
+      select :{
+        content : true , 
+        title : true ,
+        authorId: true,
+        id:true,
+        publishedDate:true,
+        author : {
+           select : {
+            name : true ,
+            id:true
+            
+           }
+        }
+      }
     });
     return c.json(post);
   } catch (e) {
     console.log("Something went wrong :::", e);
   }
 });
+
+blogRouter.get('/get/many' , async(c)=>{
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const posts = await prisma.post.findMany({
+      select : {
+        content : true , 
+        title : true , 
+        id : true ,
+        authorId : true ,
+        publishedDate:true,
+        author:{
+          select : {
+            name : true
+          }
+        }
+      }
+    }); // Adjust 'post' to your model name
+   
+    console.log(posts);
+    return c.json(posts);
+  } catch (error) {
+    console.error(error);
+    c.status(500);
+    return c.json({ error: 'An error occurred while fetching posts.' });
+  } 
+});
+
+
 
 //route to get all the posts from an author
 blogRouter.get('/bulk/:userId', async (c) => {
@@ -171,6 +256,18 @@ blogRouter.get('/bulk/:userId', async (c) => {
       where: {
         authorId: userId, 
       },
+      select : {
+        content : true , 
+        title : true , 
+        id : true ,
+        publishedDate:true,
+        authorId : true ,
+        author:{
+          select : {
+            name : true
+          }
+        }
+      }
 
       // include:{
       //   author : true

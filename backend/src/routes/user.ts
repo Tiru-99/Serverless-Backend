@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { sign , verify} from 'hono/jwt'
+import { sign } from 'hono/jwt'
 //importing deployed librar
 import { signinInput , signupInput ,SignupType} from 'tiru_99-common'
 import { parse } from 'hono/utils/cookie'
@@ -78,6 +78,7 @@ userRouter.post('/signup' , async(c)=>{
     else{
     const user = await prisma.user.create({
       data :{
+        name : body.name,
         email : body.email,
         password : body.password
       }
@@ -113,18 +114,27 @@ userRouter.post('/signin',async(c)=>{
 
   const user = await prisma.user.findUnique({
     where:{
-      email : body.email, 
-      password : body.password,
+      email : body.email,      
     }
   });
 
+
   if(!user){
+    c.status(404);
     return c.json({
       "msg" : "User not found"
     })
   }
 
+  if(body.password !== user.password){
+    c.status(403);
+    return c.json({
+      "msg": "Incorrect Password or Email"
+    })
+  }
+
   const jwt = await sign({id:user.id } , c.env.JWT_SECRET);
+  c.status(200);
   return c.json({
     "jwt":jwt
   });

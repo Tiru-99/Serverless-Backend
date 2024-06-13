@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "publishedDate" DROP NOT NULL,
+ALTER COLUMN "publishedDate" DROP DEFAULT,
+ALTER COLUMN "publishedDate" SET DATA TYPE TEXT;

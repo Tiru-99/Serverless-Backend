@@ -16,6 +16,7 @@ exports.createPostType = zod_1.z.object({
     content: zod_1.z.string()
 });
 exports.updatePostType = zod_1.z.object({
+    id: zod_1.z.string(),
     title: zod_1.z.string().optional(),
     content: zod_1.z.string().optional()
 });

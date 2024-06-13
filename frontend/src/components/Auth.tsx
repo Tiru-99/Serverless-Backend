@@ -21,22 +21,26 @@ export const Auth = () => {
 
     async function sendRequest(){
 
+      // Check if all required fields are filled
+      if (!postInput.name || !postInput.email || !postInput.password || !confirmPassword) {
+        setError("Please fill all the fields");
+        return;
+    }
+
+        // Validate input using zod schema
         const validation = signupInput.safeParse(postInput);
         if (!validation.success) {
-            setError("Please fill the inputs in proper format");
+            setError("Please enter the proper Email");
             return;
         }
 
-
-        if(postInput.password == null || postInput.email == null || postInput.password == null || confirmPassword == null){
-            setError("Please fill all the fields");
-            return ;
-            
+        if (postInput.password.length < 6) {
+            setError("Password should be at least 6 characters long");
+            return;
         }
 
         if (postInput.password !== confirmPassword) {
             setError("Your Password and Confirm Passwords do not match");
-            
             return;
         }
 
@@ -47,7 +51,8 @@ export const Auth = () => {
            
             const jwt = response.data.jwt;  // Assuming the jwt is returned as part of the data
             localStorage.setItem("token", jwt);
-            navigate('/blogs');
+            alert("Signup Succesfull , redirecting to the login page...")
+            navigate('/signin');
         } catch(e : any) {
             if (e.response) {
                 // Server responded with an error status code
